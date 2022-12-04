@@ -44,23 +44,26 @@ async function addToDatabase(filePath, file, category) {
 }
 
 async function moveFileToProcessedFolder(filePath, file, category) {
-    const moveTo = path.join("./processed_imgs", file)
-    fs.rename(filePath, moveTo, (err) => {
-        if (err) {
-            throw err
-        } else {
-            console.log("Successfully moved the file!");
-        }
-    });
+    const processedFolder = `./proccesed_${category}`
+    if(!fs.existsSync(processedFolder)){
+        fs.mkdirSync(processedFolder)
+    }
+    const moveTo = path.join(processedFolder, file)
+    fs.renameSync(filePath, moveTo)
+    return;
 }
 
 async function addLocalData(folderPath) {
     const files = fs.readdirSync(folderPath)
     const category = path.basename(folderPath)
     for (const file of files) {
-        console.log("Adding: ", file)
         const filePath = path.join(folderPath, file)
-
+        if (file === ".DS_Store"){
+            fs.unlinkSync(filePath);
+            console.log("Deleted .ds_store")
+            continue;
+        }
+        console.log("Adding: ", file)
         await uploadFileToBucket(filePath, file).catch(err => {
             console.error(err);
             process.exit(1);
@@ -71,8 +74,11 @@ async function addLocalData(folderPath) {
             process.exit(1);
         })
 
-        moveFileToProcessedFolder(filePath, file, category)
+        await moveFileToProcessedFolder(filePath, file, category)
     }
+    console.log("Successfully added all files to db!")
+    fs.rmdirSync(folderPath)
+    console.log("Deleted folder")
 }
 
 module.exports = {

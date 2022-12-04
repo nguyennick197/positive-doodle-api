@@ -1,5 +1,3 @@
 /node_modules
 .env
-
-/processed_imgs
-/test_imgs
+.DS_Store

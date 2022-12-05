@@ -4,12 +4,10 @@ const express = require('express')
 const router = express.Router();
 
 router.route('/').get(async (req, res) => {
-
     const page = req.query.page || 1;
     const perPage = req.query.per_page || 20;
 
     const offset = (page - 1) * perPage;
-
     const rangeEnd = offset + perPage
 
     const { data, error } = await supabase
@@ -27,7 +25,6 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/random').get(async (req, res) => {
-
     const { data, error } = await supabase
         .from("random_doodle")
         .select()

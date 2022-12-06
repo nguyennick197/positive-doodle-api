@@ -1,4 +1,5 @@
 const { supabase } = require("../supabase.js");
+const { doesCategoryExist } = require('../utils/categories')
 const express = require('express')
 
 const router = express.Router();
@@ -18,28 +19,50 @@ router.route('/').get(async (req, res) => {
 
     if (error) {
         console.error(error);
-        res.status(500).send("Error when querying the doodles table.");
+        return res.status(500).send("Error when querying the doodles table.");
     }
-    if (data) {
-        res.json(data);
-    }
+    return res.json(data);
 });
 
 router.route('/random').get(async (req, res) => {
-    const { data, error } = await supabase
+    const category = req.query.category;
+
+    const supabaseQuery = supabase
         .from("random_doodle")
         .select()
         .limit(1)
         .single();
 
+
+    if (category) {
+        const categoryExists = doesCategoryExist(category)
+        if (!categoryExists) {
+            return res.status(500).send("This category does not exist");
+        }
+        supabaseQuery.eq('category', category)
+    }
+
+    const { data, error } = await supabaseQuery
+
     if (error) {
         console.error(error);
-        res.status(500).send("Error when querying the random doodles table.");
+        return res.status(500).send("Error when querying the random doodles table.");
     }
-    if (data) {
-        res.json(data);
+    return res.json(data);
+});
+
+router.route('/categories').get(async (req, res) => {
+    const { data, error } = await supabase
+        .from("categories")
+        .select();
+
+    if (error) {
+        console.error(error);
+        return res.status(500).send("Error getting the categories view.");
     }
-})
+
+    return res.json(data);
+});
 
 router.route('/:id').get(async (req, res) => {
     const id = req.params.id;
@@ -53,11 +76,9 @@ router.route('/:id').get(async (req, res) => {
 
     if (error) {
         console.error(error);
-        res.status(500).send("Error when querying the doodles table.");
+        return res.status(500).send("Error when querying the doodles table.");
     }
-    if (data) {
-        res.json(data);
-    }
-})
+    return res.json(data);
+});
 
 module.exports = router;

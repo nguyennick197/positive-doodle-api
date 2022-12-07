@@ -69,7 +69,7 @@ Retrieves a random doodle.
 
 ---
 
-## Get a random doodle
+## Get all categories
 
 `GET /doodles/categories`
 

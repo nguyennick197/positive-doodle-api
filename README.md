@@ -8,7 +8,6 @@ This API provides access drawings from the positivedoodles tumblr, created by Em
  - [Tumblr](https://positivedoodles.tumblr.com/)
 
 ## Built With
- - [React](https://reactjs.org/)
  - [Supabase](https://supabase.com/)
  - [Node](https://nodejs.org/en/)
  - [Express](https://expressjs.com/)

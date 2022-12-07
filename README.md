@@ -69,11 +69,11 @@ Retrieves a random doodle.
 
 ---
 
-## Get all categories
+## Get all doodle categories
 
 `GET /doodles/categories`
 
-Retrieves a list of possible categories.
+Retrieves a list of all possible categories for a doodle.
 
 ### Example
 

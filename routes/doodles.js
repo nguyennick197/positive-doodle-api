@@ -11,17 +11,22 @@ router.route('/').get(async (req, res) => {
     const offset = (page - 1) * perPage;
     const rangeEnd = offset + perPage;
 
-    const { data, error } = await supabase
-        .from("doodles")
-        .select()
-        .limit(perPage)
-        .range(offset, rangeEnd);
+    try {
+        const { data, error } = await supabase
+            .from("doodles")
+            .select()
+            .limit(perPage)
+            .range(offset, rangeEnd);
 
-    if (error) {
-        console.error(error);
-        return res.status(500).send("Error when querying the doodles table.");
+        if (error) {
+            console.error(error);
+            return res.status(500).send("Error when querying the doodles table.");
+        }
+        return res.json(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
     }
-    return res.json(data);
 });
 
 router.route('/random').get(async (req, res) => {

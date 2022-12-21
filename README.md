@@ -85,9 +85,6 @@ Retrieves a list of all possible categories for a doodle.
 
 All responses are in JSON format, with the following fields:
 
-- `success`: A boolean indicating whether the request was successful.
 - `data`: The data returned by the request. This will be an array of rows for requests to `/doodles`, or a single object for requests to `/doodles/:id` or `/doodles/random`.
-- `error`: An error message, if the request was not successful.
-
 
 

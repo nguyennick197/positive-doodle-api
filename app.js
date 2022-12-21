@@ -9,12 +9,14 @@ const app = express();
 app.use(cors());
 
 // limit api usage to 100 requests per minute, except for whitelisted IP and URL
+let whitelisted_ips = process.env.WHITELIST_IP.split(",");
+let whitelisted_urls = process.env.WHITELIST_URL.split(",");
 const limiter = rateLimit({
     windowMs: 60 * 1000,
     max: 100, 
     skip: (req) => {
-        return (req.ip === process.env.WHITELIST_IP ||
-            req.headers.referer === process.env.WHITELIST_URL);
+        return (whitelisted_ips.includes(req.ip) ||
+            whitelisted_urls.includes(req.headers.referer));
     }
 });
 app.use(limiter);

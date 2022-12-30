@@ -13,14 +13,15 @@ router.route('/').get(async (req, res) => {
     }
 
     const offset = (page - 1) * perPage;
-    const rangeEnd = offset + perPage;
+    const rangeEnd = offset + perPage - 1;
 
     try {
         const { data, error } = await supabase
             .from("doodles")
             .select()
             .limit(perPage)
-            .range(offset, rangeEnd);
+            .range(offset, rangeEnd)
+            .order('url', { ascending: false });
 
         if (error) {
             console.error(error);

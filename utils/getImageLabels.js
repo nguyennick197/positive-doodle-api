@@ -7,7 +7,6 @@ async function getImageLabels(filePath) {
     labels.forEach(label => {
         label_map[label.description] = label.score
     })
-    console.log(label_map)
     return label_map
 }
 

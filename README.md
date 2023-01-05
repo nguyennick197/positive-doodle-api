@@ -1,6 +1,6 @@
 # Positive Doodle API
 
-This API provides access drawings from the positivedoodles tumblr, created by Emm Roy. Drawings are not allowed to be used for profit. Documentation on how to consume the API is provided below.
+This API provides access drawings from the positivedoodles tumblr, drawn by Emm Roy. Drawings are not allowed to be used for profit. Documentation on how to consume the API is provided below.
 
 ## Emm Roy's socials
  - [Patreon](https://www.patreon.com/emmnotemma)

@@ -8,6 +8,7 @@ const fieldsToGet = `id, url, created_at, tags, image_text`
 router.route('/').get(async (req, res) => {
     const page = req.query.page || 1;
     const perPage = req.query.per_page || 20;
+    const tag = req.query.tag;
     const search = req.query.search;
 
     if (perPage > 100) {
@@ -25,9 +26,13 @@ router.route('/').get(async (req, res) => {
             .range(offset, rangeEnd)
             .order('id', { ascending: true });
 
+        if (tag) {
+            supabaseQuery.ilike('tags', `%${tag}%`);
+        }
+
         if (search) {
             let searchString = search.toLowerCase().split(" ").join(" | ");
-            supabaseQuery.textSearch('doodles_fts', searchString)
+            supabaseQuery.textSearch('fts', searchString)
         }
 
         const { data, error } = await supabaseQuery;
@@ -44,7 +49,8 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/random').get(async (req, res) => {
-    const category = req.query.category;
+    const tag = req.query.tag;
+    const search = req.query.search;
 
     try {
         const supabaseQuery = supabase
@@ -53,28 +59,16 @@ router.route('/random').get(async (req, res) => {
             .limit(1)
             .single();
 
-        if (category) {
-            let searchString = category.toLowerCase().split(" ").join(" | ");
-            supabaseQuery.textSearch('doodles_fts', searchString)
+        if (tag) {
+            supabaseQuery.ilike('tags', `%${tag}%`);
+        }
+
+        if (search) {
+            let searchString = search.toLowerCase().split(" ").join(" | ");
+            supabaseQuery.textSearch('fts', searchString);
         }
 
         const { data, error } = await supabaseQuery;
-        if (error) {
-            console.error(error);
-            return res.status(500).json(error);
-        }
-        return res.json(data);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json(err);
-    }
-});
-
-router.route('/categories').get(async (req, res) => {
-    try {
-        const { data, error } = await supabase
-            .from("categories")
-            .select(fieldsToGet);
         if (error) {
             console.error(error);
             return res.status(500).json(error);

@@ -30,10 +30,12 @@ Retrieves all doodles, paginated.
 
 - `page`: The page number to retrieve. Default is 1.
 - `per_page`: The number of rows to retrieve per page. Default is 20.
+- `tag`: Filter doodles by tag.
+- `search`: Filters doodles by image text and tags.
 
 ## Example
 
-`$ curl https://api.nicknguyencodes.com/doodles?page=2&per_page=5`
+`$ curl https://api.nicknguyencodes.com/doodles?page=2&per_page=5&search=cat`
 
 ---
 
@@ -61,23 +63,24 @@ Retrieves a random doodle.
 
 ### Query parameters
 
-- `category`: The category of doodle to retrieve. Default is null.
+- `tag`: The tag of doodle to retrieve. Default is null.
+- `search`: Filters doodles by image text and tag. Default is null.
 
 ### Example
 
-`$ curl https://api.nicknguyencodes.com/doodles/random?category=cat`
+`$ curl https://api.nicknguyencodes.com/doodles/random?tags=cat`
 
 ---
 
-## Get all doodle categories
+## Get all doodle tags
 
-`GET /doodles/categories`
+`GET /doodles/tags`
 
-Retrieves a list of all possible categories for a doodle.
+Retrieves a list of all possible tags for a doodle.
 
 ### Example
 
-`$ curl https://api.nicknguyencodes.com/doodles/categories`
+`$ curl https://api.nicknguyencodes.com/doodles/tags`
 
 ---
 

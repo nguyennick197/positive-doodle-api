@@ -1,5 +1,4 @@
 const { supabase } = require("../supabase.js");
-const { doesCategoryExist } = require('../utils/categories');
 const express = require('express');
 
 const router = express.Router();

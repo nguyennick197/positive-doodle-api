@@ -13,7 +13,7 @@ let whitelisted_ips = process.env.WHITELIST_IP.split(",");
 let whitelisted_urls = process.env.WHITELIST_URL.split(",");
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 100, 
+    max: 100,
     skip: (req) => {
         return (whitelisted_ips.includes(req.ip) ||
             whitelisted_urls.includes(req.headers.referer));
@@ -22,6 +22,10 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const port = process.env.PORT || 3070;
+
+app.get('/', (req, res) => {
+    res.send('Welcome to my Positive Doodle API!')
+})
 
 app.use('/doodles', doodleRouter);
 

@@ -1,8 +1,8 @@
 const axios = require('axios');
 const tumblr = require('tumblr.js');
 const { supabase, SUPABASE_URL } = require("../supabase.js");
-const { getImageLabels } = require("./getImageLabels")
-const { getImageText } = require("./getImageText")
+const { getImageLabels } = require("./getImageLabels");
+const { getImageText } = require("./getImageText");
 
 const client = tumblr.createClient({
     consumer_key: process.env.TUMBLR_CONSUMER,
@@ -17,17 +17,17 @@ async function uploadFileToBucket(photo, fileData) {
         .from("positivedoodles")
         .upload(photo.filename, fileData, {
             contentType: 'image/png'
-        })
+        });
     if (error) {
-        console.log("Error uploading file to bucket", error)
-        process.exit(1)
+        console.log("Error uploading file to bucket", error);
+        process.exit(1);
     }
-    console.log("Success uploading file to bucket", data)
+    console.log("Success uploading file to bucket", data);
 }
 
 async function addToDatabase(photo, fileData) {
-    let [processedText, processedLabels] = await Promise.all([getImageText(fileData), getImageLabels(fileData)])
-    const created_at = new Date(photo.date)
+    let [processedText, processedLabels] = await Promise.all([getImageText(fileData), getImageLabels(fileData)]);
+    const created_at = new Date(photo.date);
     const { error } = await supabase
         .from("positive_doodles")
         .insert({
@@ -44,10 +44,10 @@ async function addToDatabase(photo, fileData) {
             tumblr_image_url: photo.url
         })
     if (error) {
-        console.log("Error!", error)
-        process.exit(1)
+        console.log("Error!", error);
+        process.exit(1);
     }
-    console.log("Success adding to database!")
+    console.log("Success adding to database!");
 }
 
 async function getTumblrImages(offset = 0) {
@@ -77,8 +77,8 @@ async function getTumblrImages(offset = 0) {
             for (const photo of photos) {
                 const response = await axios.get(photo.url, { responseType: 'arraybuffer' });
                 const fileData = response.data;
-                await uploadFileToBucket(photo, fileData)
-                await addToDatabase(photo, fileData)
+                await uploadFileToBucket(photo, fileData);
+                await addToDatabase(photo, fileData);
             }
             if (resp.total_posts > offset + resp.posts.length) {
                 await getTumblrImages(offset + resp.posts.length);
@@ -88,7 +88,7 @@ async function getTumblrImages(offset = 0) {
 }
 
 async function main() {
-    await getTumblrImages(20);
+    await getTumblrImages(0);
 }
 
-main()
+main();

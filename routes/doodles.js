@@ -55,7 +55,7 @@ router.route('/random').get(async (req, res) => {
     try {
         const supabaseQuery = supabase
             .from("random_positive_doodle")
-            .select()
+            .select(fieldsToGet)
             .limit(1)
             .single();
 
@@ -84,7 +84,7 @@ router.route('/tags').get(async (req, res) => {
     try {
         const { data, error } = await supabase
             .from("tag_count")
-            .select(fieldsToGet);
+            .select();
         if (error) {
             console.error(error);
             return res.status(500).json(error);

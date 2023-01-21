@@ -51,6 +51,7 @@ router.route('/').get(async (req, res) => {
 router.route('/random').get(async (req, res) => {
     const tag = req.query.tag;
     const search = req.query.search;
+    const file_name = req.query.file_name;
 
     try {
         const supabaseQuery = supabase
@@ -66,6 +67,10 @@ router.route('/random').get(async (req, res) => {
         if (search) {
             let searchString = search.toLowerCase().split(" ").join(" | ");
             supabaseQuery.textSearch('fts', searchString);
+        }
+
+        if (file_name) {
+            supabaseQuery.eq("file_name", file_name);
         }
 
         const { data, error } = await supabaseQuery;

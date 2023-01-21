@@ -70,7 +70,7 @@ async function getTumblrImages(offset = 0) {
                         timestamp: post.timestamp,
                         tumblr_post_url: post.short_url
                     });
-                    photoCountercounter++;
+                    photoCounter++;
                 }
             }
             

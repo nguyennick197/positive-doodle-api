@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const doodleRouter = require('./routes/doodles');
+const healthRouter = require('./routes/health');
 
 const app = express();
 app.use(cors());
@@ -28,6 +29,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/doodles', doodleRouter);
+
+app.use('/health', healthRouter);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)

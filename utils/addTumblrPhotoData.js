@@ -50,45 +50,49 @@ async function addToDatabase(photo, fileData) {
     console.log("Success adding to database!");
 }
 
+function getBlogPosts(offset) {
+    return new Promise(resolve => {
+        client.blogPosts('positivedoodles', { type: 'photo', offset, tag: ["doodles", "doodle"] }, function (err, resp) {
+            resolve({ err, resp });
+        })
+    })
+}
+
 async function getTumblrImages(offset = 0) {
-    client.blogPosts('positivedoodles', { type: 'photo', offset, tag: ["doodles", "doodle"]}, async function (err, resp) {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        console.log("Offset: ", offset);
-        if (resp && resp.posts) {
-            const photos = [];
-            for (const post of resp.posts) {
-                let photoCounter = 0;
-                for (const photo of post.photos) {
-                    photos.push({
-                        filename: `tumblr_${post.id}_${photoCounter}.png`,
-                        tags: post.tags.join(","),
-                        url: photo.original_size.url,
-                        date: post.date,
-                        timestamp: post.timestamp,
-                        tumblr_post_url: post.short_url
-                    });
-                    photoCounter++;
-                }
-            }
-            
-            for (const photo of photos) {
-                const response = await axios.get(photo.url, { responseType: 'arraybuffer' });
-                const fileData = response.data;
-                await uploadFileToBucket(photo, fileData);
-                await addToDatabase(photo, fileData);
-            }
-            if (resp.total_posts > offset + resp.posts.length) {
-                await getTumblrImages(offset + resp.posts.length);
+    const { err, resp } = await getBlogPosts(offset);
+    if (err) {
+        console.err(err);
+        return;
+    }
+    if (resp && resp.posts) {
+        const photos = [];
+        for (const post of resp.posts) {
+            let photoCounter = 0;
+            for (const photo of post.photos) {
+                photos.push({
+                    filename: `tumblr_${post.id}_${photoCounter}.png`,
+                    tags: post.tags.join(","),
+                    url: photo.original_size.url,
+                    date: post.date,
+                    timestamp: post.timestamp,
+                    tumblr_post_url: post.short_url
+                });
+                photoCounter++;
             }
         }
-    });
+ 
+        for (const photo of photos) {
+            const response = await axios.get(photo.url, { responseType: 'arraybuffer' });
+            const fileData = response.data;
+            await uploadFileToBucket(photo, fileData);
+            await addToDatabase(photo, fileData);
+        }
+        if (resp.total_posts > offset + resp.posts.length) {
+            await getTumblrImages(offset + resp.posts.length);
+        }
+    }
 }
 
-async function main() {
-    await getTumblrImages(0);
-}
-
-main();
+module.exports = {
+    getTumblrImages
+};

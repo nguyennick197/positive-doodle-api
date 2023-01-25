@@ -1,5 +1,6 @@
-const { supabase } = require("../supabase.js");
 const express = require('express');
+const { supabase } = require("../supabase.js");
+const { filterQuery } = require('../utils/filterQuery');
 
 const router = express.Router();
 
@@ -8,8 +9,7 @@ const fieldsToGet = `id, url, created_at, tags, image_text`
 router.route('/').get(async (req, res) => {
     const page = req.query.page || 1;
     const perPage = req.query.per_page || 20;
-    const tag = req.query.tag;
-    const search = req.query.search;
+    const order = req.query.order;
 
     if (perPage > 100) {
         res.status(400).send("The maximum page size is 100. Retry with a lower per_page query parameter.");
@@ -18,22 +18,17 @@ router.route('/').get(async (req, res) => {
     const offset = (page - 1) * perPage;
     const rangeEnd = offset + perPage - 1;
 
+    const isAscending = order !== "descending";
+
     try {
         const supabaseQuery = supabase
             .from("positive_doodles")
             .select(fieldsToGet)
             .limit(perPage)
             .range(offset, rangeEnd)
-            .order('id', { ascending: true });
+            .order('id', { ascending: isAscending });
 
-        if (tag) {
-            supabaseQuery.ilike('tags', `%${tag}%`);
-        }
-
-        if (search) {
-            let searchString = search.toLowerCase().split(" ").join(" | ");
-            supabaseQuery.textSearch('fts', searchString)
-        }
+        filterQuery(supabaseQuery, req.query);
 
         const { data, error } = await supabaseQuery;
 
@@ -49,10 +44,6 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/random').get(async (req, res) => {
-    const tag = req.query.tag;
-    const search = req.query.search;
-    const file_name = req.query.file_name;
-
     try {
         const supabaseQuery = supabase
             .from("random_positive_doodle")
@@ -60,18 +51,7 @@ router.route('/random').get(async (req, res) => {
             .limit(1)
             .single();
 
-        if (tag) {
-            supabaseQuery.ilike('tags', `%${tag}%`);
-        }
-
-        if (search) {
-            let searchString = search.toLowerCase().split(" ").join(" | ");
-            supabaseQuery.textSearch('fts', searchString);
-        }
-
-        if (file_name) {
-            supabaseQuery.eq("file_name", file_name);
-        }
+        filterQuery(supabaseQuery, req.query);
 
         const { data, error } = await supabaseQuery;
         if (error) {

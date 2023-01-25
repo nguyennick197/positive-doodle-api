@@ -7,8 +7,8 @@ const router = express.Router();
 const fieldsToGet = `id, url, created_at, tags, image_text`
 
 router.route('/').get(async (req, res) => {
-    const page = req.query.page || 1;
-    const perPage = req.query.per_page || 20;
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.per_page) || 20;
     const order = req.query.order;
 
     if (perPage > 100) {

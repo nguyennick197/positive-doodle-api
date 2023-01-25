@@ -30,12 +30,14 @@ Retrieves all doodles, paginated.
 
 - `page`: The page number to retrieve. Default is 1.
 - `per_page`: The number of rows to retrieve per page. Default is 20.
-- `tag`: Filter doodles by tag.
-- `search`: Filters doodles by image text and tags.
+- `order`: The order to retrieve the doodles in by id, descending or ascending. Default is ascending.
+- `file_name`: Filter doodles by file_name. Default is none.
+- `tag`: Filter doodles by tag. Default is none.
+- `search`: Filters doodles by image text and tags. Default is none.
 
 ## Example
 
-`$ curl https://api.nicknguyencodes.com/doodles?page=2&per_page=5&search=cat`
+`$ curl https://api.nicknguyencodes.com/doodles?page=2&per_page=5&order=descending&search=cat`
 
 ---
 
@@ -63,8 +65,9 @@ Retrieves a random doodle.
 
 ### Query parameters
 
-- `tag`: The tag of doodle to retrieve. Default is null.
-- `search`: Filters doodles by image text and tag. Default is null.
+- `tag`: The tag of doodle to retrieve. Default is none.
+- `search`: Filters doodles by image text and tag. Default is none.
+- `file_name`: Filter doodles by file_name. Default is none.
 
 ### Example
 
@@ -88,6 +91,6 @@ Retrieves a list of all possible tags for a doodle.
 
 All responses are in JSON format, with the following fields:
 
-- `data`: The data returned by the request. This will be an array of rows for requests to `/doodles`, or a single object for requests to `/doodles/:id` or `/doodles/random`.
+- The data returned by the request will be an array of rows for requests to `/doodles`, or a single object for requests to `/doodles/:id` or `/doodles/random`.
 
 

@@ -1,17 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import * as dotenv from "dotenv";
 
-const doodleRouter = require('./routes/doodles');
-const healthRouter = require('./routes/health');
+import doodleRouter from './routes/doodles';
+import healthRouter from './routes/health';
 
-const app = express();
+dotenv.config();
+const app = express()
 app.use(cors());
 
 // limit api usage to 100 requests per minute, except for whitelisted IP and URL
-let whitelisted_ips = process.env.WHITELIST_IP.split(",");
-let whitelisted_urls = process.env.WHITELIST_URL.split(",");
+let whitelisted_ips: (string | undefined)[] = process.env.WHITELIST_IP!.split(",");
+let whitelisted_urls: (string | undefined)[] = process.env.WHITELIST_URL!.split(",");
 const limiter = rateLimit({
     windowMs: 60 * 1000,
     max: 100,
@@ -33,5 +34,5 @@ app.use('/doodles', doodleRouter);
 app.use('/health', healthRouter);
 
 app.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
+    console.log(`Server listening on port ${port}`);
 });

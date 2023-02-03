@@ -1,8 +1,25 @@
-const axios = require('axios');
-const tumblr = require('tumblr.js');
-const { supabase, SUPABASE_URL } = require("../supabase.js");
-const { getImageLabels } = require("./getImageLabels");
-const { getImageText } = require("./getImageText");
+import axios from 'axios';
+import tumblr from 'tumblr.js';
+import { supabase, SUPABASE_URL } from "../supabase";
+import { getImageLabels } from "./getImageLabels";
+import { getImageText } from "./getImageText";
+
+interface Photo {
+    filename: string;
+    tags: string;
+    url: string;
+    date: number;
+    timestamp: number;
+    tumblr_post_url: string;
+}
+
+interface TumblrResponse {
+    err: any;
+    resp: {
+        posts: any[];
+        total_posts: number;
+    }
+}
 
 const client = tumblr.createClient({
     consumer_key: process.env.TUMBLR_CONSUMER,
@@ -11,7 +28,7 @@ const client = tumblr.createClient({
     token_secret: process.env.TUMBLR_TOKEN_SECRET
 });
 
-async function uploadFileToBucket(photo, fileData) {
+async function uploadFileToBucket(photo: Photo, fileData: ArrayBuffer) {
     const { data, error } = await supabase
         .storage
         .from("positivedoodles")
@@ -25,7 +42,7 @@ async function uploadFileToBucket(photo, fileData) {
     console.log("Success uploading file to bucket", data);
 }
 
-async function addToDatabase(photo, fileData) {
+async function addToDatabase(photo: Photo, fileData: Buffer) {
     let [processedText, processedLabels] = await Promise.all([getImageText(fileData), getImageLabels(fileData)]);
     const created_at = new Date(photo.date);
     const { error } = await supabase
@@ -50,7 +67,7 @@ async function addToDatabase(photo, fileData) {
     console.log("Success adding to database!");
 }
 
-function getBlogPosts(offset) {
+function getBlogPosts(offset: number): Promise<TumblrResponse> {
     return new Promise(resolve => {
         client.blogPosts('positivedoodles', { type: 'photo', offset, tag: ["doodles", "doodle"] }, function (err, resp) {
             resolve({ err, resp });
@@ -58,14 +75,14 @@ function getBlogPosts(offset) {
     })
 }
 
-async function getTumblrImages(offset = 0) {
+export async function getTumblrImages(offset: number = 0) {
     const { err, resp } = await getBlogPosts(offset);
     if (err) {
-        console.err(err);
+        console.error(err);
         return;
     }
     if (resp && resp.posts) {
-        const photos = [];
+        const photos: Photo[] = [];
         for (const post of resp.posts) {
             let photoCounter = 0;
             for (const photo of post.photos) {
@@ -80,7 +97,7 @@ async function getTumblrImages(offset = 0) {
                 photoCounter++;
             }
         }
- 
+
         for (const photo of photos) {
             const response = await axios.get(photo.url, { responseType: 'arraybuffer' });
             const fileData = response.data;
@@ -92,7 +109,3 @@ async function getTumblrImages(offset = 0) {
         }
     }
 }
-
-module.exports = {
-    getTumblrImages
-};

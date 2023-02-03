@@ -5,7 +5,7 @@
   "author": "Nick Nguyen",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "vercel dev -l 3070"
   },
   "dependencies": {
     "@google-cloud/vision": "^3.0.1",

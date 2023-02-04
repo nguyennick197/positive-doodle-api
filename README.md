@@ -7,17 +7,6 @@ This API provides access drawings from the positivedoodles tumblr, drawn by Emm 
  - [Twitter](https://twitter.com/emmnotemma)
  - [Tumblr](https://positivedoodles.tumblr.com/)
 
-## Built With
- - [Supabase](https://supabase.com/)
- - [Node](https://nodejs.org/en/)
- - [Express](https://expressjs.com/)
- - [Cloud Vision AI](https://cloud.google.com/vision)
-
-## Contributors 
- - [Nick Nguyen](https://github.com/nguyennick197)
-
----
-
 # Endpoints
 
 ## Get all doodles        
@@ -81,6 +70,11 @@ Retrieves a random doodle.
 
 Retrieves a list of all possible tags for a doodle.
 
+### Query parameters
+
+- `page`: The page number to retrieve. Default is 1.
+- `per_page`: The number of rows to retrieve per page. Default is 40.
+
 ### Example
 
 `$ curl https://api.nicknguyencodes.com/doodles/tags`
@@ -89,8 +83,28 @@ Retrieves a list of all possible tags for a doodle.
 
 ## Response format
 
-All responses are in JSON format, with the following fields:
+All responses are in JSON format.
 
-- The data returned by the request will be an array of rows for requests to `/doodles`, or a single object for requests to `/doodles/:id` or `/doodles/random`.
+If the request is for multiple rows such as `/doodles` or `doodles/tags`, the request will have the following fields:
+
+- `data`: an array containing all of the returned rows
+- `total_items`: an integer with the count of all items from that table after the filters are applied
+
+If the request is for a single item such as `/doodles/:id` or `/doodles/random`, the return item will be a single object with the following fields:
+
+- `id`: integer with the row's database id 
+- `url`: string that contains the url to the corresponding image
+- `created_at`: string that contains the date the image was posted to the tumblr blog
+- `tags`: string that contains comma separated tags 
+- `image_text`: string that contains text from the image
+
+## Built With
+ - [Supabase](https://supabase.com/)
+ - [Node](https://nodejs.org/en/)
+ - [Express](https://expressjs.com/)
+ - [Cloud Vision AI](https://cloud.google.com/vision)
+
+## Contributors 
+ - [Nick Nguyen](https://github.com/nguyennick197)
 
 

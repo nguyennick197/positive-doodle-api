@@ -7,7 +7,9 @@ import doodleRouter from './routes/doodles';
 import healthRouter from './routes/health';
 
 dotenv.config();
-const app = express()
+const app = express();
+app.set('json spaces', 2);
+app.use(express.json());
 app.use(cors());
 
 // limit api usage to 100 requests per minute, except for whitelisted IP and URL

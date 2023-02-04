@@ -23,20 +23,23 @@ router.route('/').get(async (req: Request, res: Response) => {
     try {
         const supabaseQuery = supabase
             .from("positive_doodles")
-            .select(fieldsToGet)
+            .select(fieldsToGet, { count: 'exact' })
             .limit(perPage)
             .range(offset, rangeEnd)
             .order('id', { ascending: isAscending });
 
         filterQuery(supabaseQuery, req.query);
 
-        const { data, error } = await supabaseQuery;
+        const { data, count, error } = await supabaseQuery;
 
         if (error) {
             console.error(error);
             return res.status(500).json(error);
         }
-        return res.json(data);
+        return res.json({
+            data: data,
+            total_items: count
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json(err);
@@ -68,15 +71,28 @@ router.route('/random').get(async (req: Request, res: Response) => {
 });
 
 router.route('/tags').get(async (req, res) => {
+    const page = parseInt(req.query.page as string) || 1;
+    const perPage = parseInt(req.query.per_page as string) || 40;
+
+    const offset = (page - 1) * perPage;
+    const rangeEnd = offset + perPage - 1;
+
     try {
-        const { data, error } = await supabase
+        const { data, count, error } = await supabase
             .from("tag_count")
-            .select();
+            .select('*', { count: 'exact' })
+            .limit(perPage)
+            .range(offset, rangeEnd);
+
         if (error) {
             console.error(error);
             return res.status(500).json(error);
         }
-        return res.json(data);
+        
+        return res.json({
+            data: data,
+            total_items: count
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json(err);

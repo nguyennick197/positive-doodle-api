@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express';
 import { supabase } from "../supabase";
+import { cacheMiddleware } from '../utils/cacheMiddleware';
 
 const router = express.Router();
 
-router.route('/').get(async (req: Request, res: Response) => {
+router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const { start, end } = req.query;
 
     const supabaseQuery = supabase
@@ -19,7 +20,7 @@ router.route('/').get(async (req: Request, res: Response) => {
     if (end) {
         supabaseQuery.lt('date', end);
     }
-    
+
     const { data, count, error } = await supabaseQuery;
 
     if (error) {
@@ -31,6 +32,32 @@ router.route('/').get(async (req: Request, res: Response) => {
         data,
         total_items: count
     });
+});
+
+router.route('/').post(async (req: Request, res: Response) => {
+    const { message_count, commands, args, server_count } = req.body;
+
+    if (!message_count || !commands || !args || !server_count) {
+        return res.status(400).json({
+            error: "Error adding doodlebot analytics: missing argument(s)"
+        });
+    }
+
+    const date = new Date();
+
+    try {
+        await supabase.from("doodlebot_analytics").insert({
+            date,
+            message_count,
+            commands,
+            args,
+            server_count
+        });
+
+    } catch (err) {
+        console.error(`Error inserting analytics: ${err}`);
+        return res.status(500).json(err);
+    }
 });
 
 export default router;

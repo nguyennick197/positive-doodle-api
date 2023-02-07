@@ -1,12 +1,13 @@
 import express, { Request, Response } from 'express';
 import { supabase } from "../supabase";
 import { filterQuery } from '../utils/filterQuery';
+import { cacheMiddleware } from '../utils/cacheMiddleware';
 
 const router = express.Router();
 
 const fieldsToGet = `id, url, created_at, tags, image_text`
 
-router.route('/').get(async (req: Request, res: Response) => {
+router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const perPage = parseInt(req.query.per_page as string) || 20;
     const order = req.query.order;
@@ -70,7 +71,7 @@ router.route('/random').get(async (req: Request, res: Response) => {
     }
 });
 
-router.route('/tags').get(async (req, res) => {
+router.route('/tags').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const perPage = parseInt(req.query.per_page as string) || 40;
 
@@ -100,7 +101,7 @@ router.route('/tags').get(async (req, res) => {
 });
 
 
-router.route('/:id').get(async (req: Request, res: Response) => {
+router.route('/:id').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const id = req.params.id;
 
     try {

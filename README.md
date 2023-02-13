@@ -94,9 +94,10 @@ If the request is for a single item such as `/doodles/:id` or `/doodles/random`,
 
 - `id`: integer with the row's database id 
 - `url`: string that contains the url to the corresponding image
-- `created_at`: string that contains the date the image was posted to the tumblr blog
-- `tags`: string that contains comma separated tags 
 - `image_text`: string that contains text from the image
+- `tags`: string that contains comma separated tags 
+- `tumblr_image_url`: string that contains image url to the original tumblr post. Can be used as a backup if url is not working.
+- `created_at`: string that contains the date the image was posted to the tumblr blog
 
 ## Built With
  - [Supabase](https://supabase.com/)

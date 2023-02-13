@@ -5,7 +5,7 @@ import { cacheMiddleware } from '../utils/cacheMiddleware';
 
 const router = express.Router();
 
-const fieldsToGet = `id, url, created_at, tags, image_text`
+const fieldsToGet = `id, url, image_text, tags, tumblr_image_url, created_at`;
 
 router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;

@@ -6,8 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "vercel dev -l 3070",
-    "dev": "HTTPS=true NODE_ENV=development ts-node-dev --inspect --respawn index.ts",
-    "script": "ts-node-dev addBgColor.ts"
+    "dev": "HTTPS=true NODE_ENV=development ts-node-dev --inspect --respawn index.ts"
   },
   "dependencies": {
     "@google-cloud/vision": "^3.0.1",

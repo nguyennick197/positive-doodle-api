@@ -97,6 +97,7 @@ If the request is for a single item such as `/doodles/:id` or `/doodles/random`,
 - `image_text`: string that contains text from the image
 - `tags`: string that contains comma separated tags 
 - `tumblr_image_url`: string that contains image url to the original tumblr post. Can be used as a backup if url is not working.
+- `background_color`: array that contains the rgb values of the background color of the image
 - `created_at`: string that contains the date the image was posted to the tumblr blog
 
 ## Built With

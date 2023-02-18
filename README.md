@@ -23,10 +23,11 @@ Retrieves all doodles, paginated.
 - `file_name`: Filter doodles by file_name. Default is none.
 - `tag`: Filter doodles by tag. Default is none.
 - `search`: Filters doodles by image text and tags. Default is none.
+- `ids`: Filters doodles by comma separated list of ids. Default is none. 
 
 ## Example
 
-`$ curl https://api.nicknguyencodes.com/doodles?page=2&per_page=5&order=descending&search=cat`
+`$ curl https://api.nicknguyencodes.com/doodles?page=1&per_page=3&order=descending&search=cat&ids=70,71,77`
 
 ---
 
@@ -57,6 +58,9 @@ Retrieves a random doodle.
 - `tag`: The tag of doodle to retrieve. Default is none.
 - `search`: Filters doodles by image text and tag. Default is none.
 - `file_name`: Filter doodles by file_name. Default is none.
+- `tag`: Filter doodles by tag. Default is none.
+- `search`: Filters doodles by image text and tags. Default is none.
+- `ids`: Filters doodles by comma separated list of ids. Default is none. 
 
 ### Example
 

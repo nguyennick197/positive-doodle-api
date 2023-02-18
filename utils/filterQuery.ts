@@ -4,6 +4,7 @@ interface RequestQuery {
     tag?: string;
     search?: string;
     file_name?: string;
+    ids?: string
 }
 
 export function filterQuery(
@@ -13,6 +14,7 @@ export function filterQuery(
     const tag = reqQuery.tag;
     const search = reqQuery.search;
     const file_name = reqQuery.file_name;
+    const ids = reqQuery.ids;
 
     if (tag) {
         supabaseQuery.ilike('tags', `%${tag}%`);
@@ -25,5 +27,11 @@ export function filterQuery(
 
     if (file_name) {
        supabaseQuery.eq("file_name", file_name);
+    }
+
+    if (ids) {
+        const idArr = ids.split(',');
+        const numArr = idArr.map(id => parseInt(id));
+        supabaseQuery.in('id', numArr);
     }
 }

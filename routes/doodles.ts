@@ -2,10 +2,12 @@ import express, { Request, Response } from 'express';
 import { supabase } from "../supabase";
 import { filterQuery } from '../utils/filterQuery';
 import { cacheMiddleware } from '../utils/cacheMiddleware';
+import { getSimilarDoodles } from '../utils/getSimilarDoodles';
+import { Doodle } from '../utils/types';
 
 const router = express.Router();
 
-const fieldsToGet = `id, url, image_text, tags, tumblr_image_url, background_color, created_at`;
+export const fieldsToGet = `id, url, image_text, tags, tumblr_image_url, background_color, created_at`;
 
 router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
@@ -16,9 +18,10 @@ router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) 
         res.status(400).send("The maximum page size is 100. Retry with a lower per_page query parameter.");
     }
 
+
     const offset = (page - 1) * perPage;
     const rangeEnd = offset + perPage - 1;
-
+    
     const isAscending = order !== "descending";
 
     try {
@@ -104,19 +107,32 @@ router.route('/tags').get(cacheMiddleware(600), async (req: Request, res: Respon
 router.route('/:id').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const id = req.params.id;
 
+    let similar = parseInt(req.query.similar as string);
+
+    if (similar > 5) similar = 5; // query param has a max of 5
+
     try {
-        const { data, error } = await supabase
+        let { data, error } = await supabase
             .from("positive_doodles")
             .select(fieldsToGet)
             .eq('id', id)
             .limit(1)
             .single();
-
+        
         if (error) {
             console.error(error);
             return res.status(500).json(error);
         }
-        return res.json(data);
+
+        const dataCopy: Doodle = { ...data };
+
+        if (similar) {
+            const similarDoodles: Doodle[] = await getSimilarDoodles(data!, similar);
+            console.log(similarDoodles);
+            dataCopy.similar = similarDoodles;
+        }
+
+        return res.json(dataCopy);
     } catch (err) {
         console.error(err);
         res.status(500).json(err);

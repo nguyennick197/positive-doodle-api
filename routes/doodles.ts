@@ -128,7 +128,6 @@ router.route('/:id').get(cacheMiddleware(600), async (req: Request, res: Respons
 
         if (similar) {
             const similarDoodles: Doodle[] = await getSimilarDoodles(data!, similar);
-            console.log(similarDoodles);
             dataCopy.similar = similarDoodles;
         }
 

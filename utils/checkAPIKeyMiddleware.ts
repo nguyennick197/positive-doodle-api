@@ -15,7 +15,6 @@ export const checkAPIKeyMiddleware = async (req: Request, res: Response, next: N
             .eq('key', key);
 
         if (error || !data || (data && data.length === 0)) {
-            console.error(error);
             return res.status(401).json({ error: 'Unauthorized, incorrect API key.' });
         }
         next();

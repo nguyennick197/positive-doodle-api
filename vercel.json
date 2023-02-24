@@ -2,9 +2,9 @@
     "version": 2,
     "name": "positive-doodle-api",
     "builds": [
-      { "src": "index.ts", "use": "@vercel/node" }
+      { "src": "server.ts", "use": "@vercel/node" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "/index.ts" }
+      { "src": "/(.*)", "dest": "/server.ts" }
     ]
   }

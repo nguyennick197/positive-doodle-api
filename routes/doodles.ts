@@ -37,7 +37,6 @@ router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) 
         const { data, count, error } = await supabaseQuery;
 
         if (error) {
-            console.error(error);
             return res.status(500).json(error);
         }
         return res.json({
@@ -64,7 +63,6 @@ router.route('/random').get(async (req: Request, res: Response) => {
 
         const { data, error } = await supabaseQuery;
         if (error) {
-            console.error(error);
             return res.status(500).json(error);
         }
         return res.json(data);
@@ -89,7 +87,6 @@ router.route('/tags').get(cacheMiddleware(600), async (req: Request, res: Respon
             .range(offset, rangeEnd);
 
         if (error) {
-            console.error(error);
             return res.status(500).json(error);
         }
         
@@ -120,7 +117,6 @@ router.route('/:id').get(cacheMiddleware(600), async (req: Request, res: Respons
             .single();
         
         if (error) {
-            console.error(error);
             return res.status(500).json(error);
         }
 

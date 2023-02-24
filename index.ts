@@ -10,16 +10,15 @@ import { limiter } from './utils/limiter';
 
 dotenv.config();
 
-const app = express();
+export const app = express();
+app.set("port", process.env.PORT || 3070);
 
 app.set('json spaces', 2);
 app.use(express.json());
 app.use(cors());
 app.use(limiter);
 
-const port = process.env.PORT || 3070;
-
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
     res.send('Welcome to my Positive Doodle API!')
 })
 
@@ -28,7 +27,3 @@ app.use('/health', healthRouter);
 app.use('/doodles', doodleRouter);
 
 app.use('/doodlebot_analytics', checkAPIKeyMiddleware, analyticsRouter);
-
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});

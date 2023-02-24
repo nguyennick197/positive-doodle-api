@@ -24,7 +24,6 @@ router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) 
     const { data, count, error } = await supabaseQuery;
 
     if (error) {
-        console.error(error);
         return res.status(500).json(error);
     }
 

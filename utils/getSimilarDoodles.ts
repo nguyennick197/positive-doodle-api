@@ -17,7 +17,7 @@ export const getSimilarDoodles = async (doodle: Doodle, count: number) => {
         .select(fieldsToGet)
         .neq('id', id)
         .limit(count)
-        .ilike('tags', `%${randomTag}`)
+        .ilike('tags', `%${randomTag}%`)
 
     if (error) return [];
 

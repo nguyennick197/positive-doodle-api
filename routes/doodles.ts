@@ -7,7 +7,7 @@ import { Doodle } from '../utils/types';
 
 const router = express.Router();
 
-export const fieldsToGet = `id, url, image_text, tags, tumblr_image_url, background_color, created_at`;
+export const fieldsToGet = `id, url, image_text, tags, tumblr_image_url, background_color, created_at, doodle_tag(tag)`;
 
 router.route('/').get(cacheMiddleware(600), async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
